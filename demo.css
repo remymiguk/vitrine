@@ -65,3 +65,8 @@ code { font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; f
 .log code { overflow-wrap: anywhere; color: var(--muted); }
 
 .page-foot { padding-top: 20px; padding-bottom: 28px; color: var(--muted); font-size: 13px; }
+.vitrine-credit{display:block;width:100%;margin:0;padding:.55rem 1rem;text-align:center;font:600 .95rem/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:#0a6e6f;color:#fff}
+.vitrine-credit a{color:inherit;text-decoration:underline;text-underline-offset:.15em}
+@media (prefers-color-scheme:dark){.vitrine-credit{background:#14b8a6;color:#04201e}}
+:root[data-theme="dark"] .vitrine-credit{background:#14b8a6;color:#04201e}
+:root[data-theme="light"] .vitrine-credit{background:#0a6e6f;color:#fff}
