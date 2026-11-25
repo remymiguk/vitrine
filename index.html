@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vt-questionnaire demo</title>
+  <meta name="description" content="Live demo of the vt-questionnaire Vitrine web component: a guided, accessible questionnaire that returns its answers as JSON.">
+  <link rel="stylesheet" href="vitrine/vitrine.css">
+  <link rel="stylesheet" href="demo.css">
+  <script src="vitrine/vitrine-loader.js" data-config='{"theme":"auto"}'></script>
+  <script src="demo.js" defer></script>
+</head>
+<body>
+  <header class="page-head">
+    <h1>vt-questionnaire demo</h1>
+    <p class="lead">A guided questionnaire as one Vitrine element: one question per screen, checks on every answer, a review step and the answers as JSON. Answer the questions and watch the JSON update live.</p>
+    <p class="links">
+      <a href="https://github.com/ecrou-exact/vitrine/pull/45">Pull request #45</a>
+      <a href="https://github.com/ecrou-exact/vitrine/issues/44">Issue #44</a>
+    </p>
+  </header>
+
+  <main>
+    <section class="controls" aria-labelledby="controls-title">
+      <h2 id="controls-title">Attributes</h2>
+      <div class="control-grid">
+        <label>Variant
+          <select id="c-variant"><option>simple</option><option selected>full</option></select>
+        </label>
+        <label>Layout
+          <select id="c-layout"><option selected>steps</option><option>all</option></select>
+        </label>
+        <label>Progress
+          <select id="c-progress"><option>none</option><option>bar</option><option selected>steps</option></select>
+        </label>
+        <label>Language
+          <select id="c-lang" title="Sets the lang-ui attribute"><option value="en" selected>English</option><option value="fr">Français</option></select>
+        </label>
+        <label>Theme
+          <select id="c-theme"><option value="auto" selected>System</option><option value="light">Light</option><option value="dark">Dark</option></select>
+        </label>
+        <label class="check"><input type="checkbox" id="c-review" checked> <code>review</code></label>
+        <label class="check"><input type="checkbox" id="c-auto" checked> <code>auto-advance</code></label>
+        <label class="check"><input type="checkbox" id="c-skip" checked> <code>allow-skip</code></label>
+        <button type="button" id="c-reset">Reset</button>
+      </div>
+    </section>
+
+    <div class="columns">
+      <section class="col" aria-labelledby="q-title">
+        <h2 id="q-title">Find your setup</h2>
+        <vt-questionnaire id="q" variant="full" name="setup" label="Find your setup"></vt-questionnaire>
+      </section>
+
+      <section class="col" aria-labelledby="out-title">
+        <h2 id="out-title">Answers</h2>
+        <p class="status-line">Status: <strong id="status" data-state="draft" role="status">Draft</strong></p>
+        <vt-json id="out" variant="full" label="submission.json" depth="3">{}</vt-json>
+
+        <h3 id="log-title">Event log</h3>
+        <ol id="log" class="log" aria-labelledby="log-title" aria-live="off"><li class="empty">No events yet.</li></ol>
+      </section>
+    </div>
+  </main>
+
+  <footer class="page-foot">Static page, no framework and no build step. Vitrine is loaded from the local <code>vitrine/</code> folder.</footer>
+</body>
+</html>
