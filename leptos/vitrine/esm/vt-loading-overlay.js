@@ -1,0 +1,4 @@
+/*! Vitrine v0.14.0 | MIT License | https://github.com/ecrou-exact/vitrine
+ * Includes: highlight.js 11.12.0 (BSD-3-Clause), marked 18.1.3 (MIT), DOMPurify 3.4.17 (Apache-2.0 OR MPL-2.0), Lucide 1.52.0 (ISC; icons derived from Feather: MIT).
+ * Full license texts: THIRD_PARTY_NOTICES.md */
+import{a as o}from"./chunks/chunk-AP4NTYCS.js";import"./chunks/chunk-2SXY6GKO.js";import"./chunks/chunk-CDLFL5U7.js";import{a as e}from"./chunks/chunk-JAZI474S.js";import"./chunks/chunk-FOOPRKFN.js";import{h as t,i as r,k as m,n as i,s as l,t as s,u as a,v as n,z as f}from"./chunks/chunk-SCKP2KTO.js";e(new URL("../",import.meta.url));customElements.get("vt-loading-overlay")||customElements.define("vt-loading-overlay",o);export{l as BUILT_IN_THEMES,m as EVENTS,o as VtLoadingOverlay,r as configure,t as getConfig,n as getTheme,f as listSyntaxThemes,a as listThemes,i as registerLocale,s as registerTheme};
