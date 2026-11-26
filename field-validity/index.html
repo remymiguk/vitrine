@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form validity for vt-tags, vt-icon-picker and vt-secret</title>
+  <meta name="description" content="Demo of checkValidity() and reportValidity() on the vt-tags, vt-icon-picker and vt-secret Vitrine web components (branch feat/field-validity, not released).">
+  <link rel="stylesheet" href="vitrine/vitrine.css">
+  <link rel="stylesheet" href="validity.css">
+  <script src="vitrine/vitrine-loader.js" data-config='{"theme":"auto"}'></script>
+  <script src="validity.js" defer></script>
+</head>
+<body>
+  <div class="vitrine-credit"><a href="https://github.com/ecrou-exact/vitrine">Vitrine</a> — Built by <a href="https://github.com/ecrou-exact">Théo Geffe (@ecrou-exact)</a></div>
+  <header class="page-head">
+    <h1>Form validity for vt-tags, vt-icon-picker and vt-secret</h1>
+    <p class="lead"><code>&lt;vt-tags&gt;</code>, <code>&lt;vt-icon-picker&gt;</code> and <code>&lt;vt-secret&gt;</code> now answer <code>checkValidity()</code> and <code>reportValidity()</code> like native fields, so a form or a step container can ask them whether they are valid.</p>
+    <p class="note">This is the <code>feat/field-validity</code> branch, not released yet.</p>
+    <p class="links"><a href="../">All demos</a></p>
+  </header>
+
+  <main>
+    <div class="columns">
+      <section class="col" aria-labelledby="form-title">
+        <h2 id="form-title">Form</h2>
+        <form id="f">
+          <div class="field">
+            <span class="fv-label" id="tags-label">Topics<span class="fv-req" aria-hidden="true">*</span></span>
+            <vt-tags id="tags" name="topics" mode="edit" label="Topics" required></vt-tags>
+            <div class="btns">
+              <button type="button" data-check="tags">Check</button>
+              <button type="button" data-report="tags">Report</button>
+            </div>
+          </div>
+          <div class="field">
+            <vt-icon-picker id="icon" name="icon" label="Icon" sets="lucide" required></vt-icon-picker>
+            <div class="btns">
+              <button type="button" data-check="icon">Check</button>
+              <button type="button" data-report="icon">Report</button>
+            </div>
+          </div>
+          <div class="field">
+            <vt-secret id="secret" name="token" label="API key" editable required></vt-secret>
+            <div class="btns">
+              <button type="button" data-check="secret">Check</button>
+              <button type="button" data-report="secret">Report</button>
+            </div>
+          </div>
+          <div class="submit-row">
+            <button type="submit" class="primary">Submit</button>
+            <button type="reset">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="col" aria-labelledby="out-title">
+        <h2 id="out-title">Result</h2>
+        <pre id="out" class="out" role="status" aria-live="polite">Press a button.</pre>
+      </section>
+    </div>
+  </main>
+
+  <footer class="page-foot">Static page, no framework and no build step. Vitrine is loaded from the local <code>vitrine/</code> folder (built from the <code>feat/field-validity</code> branch).</footer>
+  <div class="vitrine-credit"><a href="https://github.com/ecrou-exact/vitrine">Vitrine</a> — Built by <a href="https://github.com/ecrou-exact">Théo Geffe (@ecrou-exact)</a></div>
+</body>
+</html>

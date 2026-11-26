@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vt-form-steps: a step-by-step form from your own fields</title>
+  <meta name="description" content="Demo of the vt-form-steps Vitrine web component: a step container for the fields you already use, with validation per step, a progress indicator and a review screen (branch feat/form-steps, not released).">
+  <link rel="stylesheet" href="vitrine/vitrine.css">
+  <link rel="stylesheet" href="form-steps.css">
+  <script src="vitrine/vitrine-loader.js" data-config='{"theme":"auto"}'></script>
+  <script src="form-steps.js" defer></script>
+</head>
+<body>
+  <div class="vitrine-credit"><a href="https://github.com/ecrou-exact/vitrine">Vitrine</a> — Built by <a href="https://github.com/ecrou-exact">Théo Geffe (@ecrou-exact)</a></div>
+  <header class="page-head">
+    <h1>&lt;vt-form-steps&gt;: a step-by-step form from your own fields</h1>
+    <p class="lead">Each <code>&lt;fieldset&gt;</code> inside <code>&lt;vt-form-steps&gt;</code> is a step. The fields stay the ones you already use (<code>vt-field</code>, <code>vt-date-picker</code>, <code>vt-upload</code>, native inputs) and keep their own validation: Next checks the fields of the step and shows their own messages, and Submit checks every step before it asks the form to submit.</p>
+    <p class="note">This is the <code>feat/form-steps</code> branch, not released yet.</p>
+    <p class="links"><a href="../">All demos</a></p>
+  </header>
+
+  <main>
+    <section class="demo" aria-labelledby="a-title">
+      <h2 id="a-title">A. Progress bar, three steps</h2>
+      <p class="desc"><code>progress="bar"</code>. Email, topics and date are required; try Next with an empty field.</p>
+      <div class="columns">
+        <div class="col">
+          <form id="form-a">
+            <vt-form-steps progress="bar" label="Sign up">
+              <fieldset>
+                <legend>Contact</legend>
+                <vt-field name="email" type="email" required label="Email" hint="We never share it."></vt-field>
+              </fieldset>
+              <fieldset>
+                <legend>Your needs</legend>
+                <vt-field name="topics" type="checkboxes" required label="Topics">
+                  code | Code blocks
+                  json | JSON viewer
+                  tables | Tables
+                </vt-field>
+                <vt-field name="plan" type="radio" label="Plan">
+                  free | Free
+                  team | Team
+                  org | Organisation
+                </vt-field>
+              </fieldset>
+              <fieldset>
+                <legend>Details</legend>
+                <vt-date-picker name="start" label="Start date" required></vt-date-picker>
+                <vt-upload name="files" label="Files" multiple max-files="3"></vt-upload>
+              </fieldset>
+            </vt-form-steps>
+          </form>
+        </div>
+        <div class="col">
+          <h3>Submitted data</h3>
+          <pre class="result" id="out-a" aria-live="polite">Nothing submitted yet.</pre>
+          <h3>vt-step events</h3>
+          <ol class="log" id="log-a"><li class="empty">No events yet.</li></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo" aria-labelledby="b-title">
+      <h2 id="b-title">B. Full variant: step list and review</h2>
+      <p class="desc"><code>variant="full"</code> (<code>progress="steps"</code> and <code>review</code>). On the review screen, Edit goes back to the step.</p>
+      <div class="columns">
+        <div class="col">
+          <form id="form-b">
+            <vt-form-steps variant="full" progress="steps" review label="Project setup">
+              <fieldset>
+                <legend>Project</legend>
+                <vt-field name="project" type="text" required maxlength="30" label="Project name" hint="Up to 30 characters."></vt-field>
+                <vt-field name="visibility" type="radio" required label="Visibility">
+                  private | Private
+                  public | Public
+                </vt-field>
+              </fieldset>
+              <fieldset>
+                <legend>Options</legend>
+                <vt-field name="notify" type="switch" label="Email notifications"></vt-field>
+                <vt-field name="seats" type="number" min="1" max="50" label="Seats"></vt-field>
+              </fieldset>
+            </vt-form-steps>
+          </form>
+        </div>
+        <div class="col">
+          <h3>Submitted data</h3>
+          <pre class="result" id="out-b" aria-live="polite">Nothing submitted yet.</pre>
+          <h3>vt-step events</h3>
+          <ol class="log" id="log-b"><li class="empty">No events yet.</li></ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-foot">Static page, no framework and no build step. Vitrine is loaded from the local <code>vitrine/</code> folder.</footer>
+  <div class="vitrine-credit"><a href="https://github.com/ecrou-exact/vitrine">Vitrine</a> — Built by <a href="https://github.com/ecrou-exact">Théo Geffe (@ecrou-exact)</a></div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+:root { color-scheme: light dark; --bg:#f3f4f1; --surface:#fff; --border:#d6d9d2; --fg:#11151c; --muted:#4a5260; --accent:#0a6e6f; --focus:#14b8a6; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#11151c; --surface:#171c25; --border:#262d3a; --fg:#e8eae6; --muted:#9aa3b2; --accent:#14b8a6; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.page-head, main { max-width: 900px; margin: 0 auto; padding-left: 16px; padding-right: 16px; }
+.page-head { padding-top: 28px; }
+h1 { margin: 0 0 6px; font-size: 1.8rem; }
+.lead { margin: 0 0 20px; color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+code { font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: .92em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0 0 32px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.card h2 { margin: 0 0 6px; font-size: 1.1rem; }
+.card p { margin: 0; color: var(--muted); }
+.vitrine-credit{display:block;width:100%;margin:0;padding:.55rem 1rem;text-align:center;font:600 .95rem/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:#0a6e6f;color:#fff}
+.vitrine-credit a{color:inherit;text-decoration:underline;text-underline-offset:.15em}
+@media (prefers-color-scheme:dark){.vitrine-credit{background:#14b8a6;color:#04201e}}
+
+/* Sticky footer: the bottom credit strip stays at the bottom of the window on tall screens. */
+body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+body > main { flex: 1 0 auto; }
+.page-head, main { width: 100%; box-sizing: border-box; }
