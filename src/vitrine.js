@@ -38,6 +38,7 @@ import { VtFaq } from './components/faq/vt-faq.js';
 import { VtGallery } from './components/gallery/vt-gallery.js';
 import { VtStats } from './components/stats/vt-stats.js';
 import { VtField } from './components/field/vt-field.js';
+import { VtFormSteps } from './components/form-steps/vt-form-steps.js';
 import { VtBoard } from './components/board/vt-board.js';
 import { VtSearch } from './components/search/vt-search.js';
 import { VtDatePicker } from './components/date-picker/vt-date-picker.js';
@@ -145,6 +146,7 @@ export {
   VtGallery,
   VtStats,
   VtField,
+  VtFormSteps,
   VtBoard,
   VtSearch,
   VtDatePicker,
@@ -274,6 +276,7 @@ export const registry = new Map(
     ['vt-gallery', VtGallery],
     ['vt-stats', VtStats],
     ['vt-field', VtField],
+    ['vt-form-steps', VtFormSteps],
     ['vt-board', VtBoard],
     ['vt-search', VtSearch],
     ['vt-date-picker', VtDatePicker],
@@ -377,6 +380,7 @@ const TYPES = /** @type {const} */ ({
   gallery: 'vt-gallery',
   stats: 'vt-stats',
   field: 'vt-field',
+  'form-steps': 'vt-form-steps',
   board: 'vt-board',
   search: 'vt-search',
   'date-picker': 'vt-date-picker',

@@ -117,6 +117,7 @@
             <option value="secret">API key</option>
             <option value="date-picker">Date picker</option>
             <option value="field">Field</option>
+            <option value="form-steps">Form steps</option>
             <option value="icon-picker">Icon picker</option>
             <option value="menu">Menu</option>
             <option value="password">Password</option>
@@ -2489,6 +2490,62 @@ Helsinki;656000;FI</template>
               <vt-field type="number" name="seats" label="Seats" min="1" max="500" suffix="seats" value="5" optional lang-ui="en"></vt-field>
               <vt-field type="switch" name="news" label="Monthly newsletter" lang-ui="en"></vt-field>
             </div>
+          </template>
+        </article>
+      </section>
+
+      <section class="example-group" id="form-steps" aria-labelledby="form-steps-title">
+        <h3 id="form-steps-title">&lt;vt-form-steps&gt;</h3>
+        <p class="muted prose">A form shown one fieldset at a time. The fields keep their own checks and their own value in the form: the steps only ask them before going on. Put the element in a <code>form</code> so that Submit sends it.</p>
+
+        <article class="example">
+          <div class="example-text">
+            <h4>Fields of the library</h4>
+            <p>Each step is a <code>fieldset</code> with a <code>legend</code>. Next waits for the fields of the step, and shows their own messages.</p>
+          </div>
+          <template>
+            <vt-form-steps progress="bar" lang-ui="en">
+              <fieldset>
+                <legend>Contact</legend>
+                <vt-field name="email" type="email" required label="Email" hint="We never share it."></vt-field>
+              </fieldset>
+              <fieldset>
+                <legend>Your needs</legend>
+                <vt-field name="topics" type="checkboxes" required label="Topics">
+                  code | Code blocks
+                  json | JSON viewer
+                  forms | Form fields
+                </vt-field>
+              </fieldset>
+              <fieldset>
+                <legend>When</legend>
+                <vt-date-picker name="start" label="Start date" required min="today"></vt-date-picker>
+              </fieldset>
+            </vt-form-steps>
+          </template>
+        </article>
+
+        <article class="example">
+          <div class="example-text">
+            <h4>A list of steps and a review</h4>
+            <p>The full variant lists the steps (the ones reached are buttons) and ends with a review screen, with an Edit button for each step.</p>
+          </div>
+          <template>
+            <vt-form-steps variant="full" lang-ui="en">
+              <fieldset>
+                <legend>Account</legend>
+                <vt-field name="name" label="Display name" required maxlength="40"></vt-field>
+                <vt-field name="plan" type="radio" label="Plan" required>
+                  free | Free
+                  pro | Pro
+                </vt-field>
+              </fieldset>
+              <fieldset>
+                <legend>Preferences</legend>
+                <vt-field name="news" type="switch" label="Monthly newsletter"></vt-field>
+                <vt-field name="seats" type="number" label="Seats" min="1" max="500" value="5"></vt-field>
+              </fieldset>
+            </vt-form-steps>
           </template>
         </article>
       </section>

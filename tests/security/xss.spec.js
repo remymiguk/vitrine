@@ -1168,6 +1168,35 @@ test.describe('XSS payloads', () => {
     expect(await page.evaluate(() => window.__xss), 'a payload executed').toBeUndefined();
   });
 
+  test('vt-form-steps shows step titles, labels and values as text in the review', async ({
+    page,
+  }) => {
+    for (const payload of PAYLOADS.slice(0, 30)) {
+      await page.evaluate(async (value) => {
+        const el = /** @type {any} */ (document.createElement('vt-form-steps'));
+        el.id = 'el';
+        el.setAttribute('variant', 'full');
+        const fieldset = document.createElement('fieldset');
+        const legend = document.createElement('legend');
+        legend.textContent = value;
+        const field = /** @type {any} */ (document.createElement('vt-field'));
+        field.setAttribute('name', 'a');
+        field.setAttribute('label', value);
+        field.value = value;
+        fieldset.append(legend, field);
+        el.append(fieldset);
+        await new Promise((resolve) => {
+          el.addEventListener('vt-ready', resolve, { once: true });
+          document.getElementById('root')?.replaceChildren(el);
+        });
+        el.goTo('review');
+      }, payload);
+      await expect(page.locator('#el .review')).toBeVisible();
+      expect(await page.evaluate(audit), `payload: ${payload}`).toEqual([]);
+    }
+    expect(await page.evaluate(() => window.__xss), 'a payload executed').toBeUndefined();
+  });
+
   test('label and title attributes are rendered as text', async ({ page }) => {
     for (const payload of PAYLOADS.slice(0, 20)) {
       await mount(page, 'vt-code', { variant: 'full', label: payload }, 'x');
