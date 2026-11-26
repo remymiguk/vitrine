@@ -140,4 +140,37 @@ test.describe('workspace elements', () => {
     await expect(page.locator('#el .ip-preview svg')).toBeVisible();
     expect(await page.evaluate(() => new FormData(/** @type {HTMLFormElement} */ (document.getElementById('form'))).get('icon'))).toBe('lucide:heart'); // prettier-ignore
   });
+
+  test('<vt-icon-picker> answers checkValidity(), reportValidity(), validity and validationMessage', async ({
+    page,
+  }) => {
+    await page.evaluate(() => {
+      const el = document.createElement('vt-icon-picker');
+      el.id = 'el';
+      el.setAttribute('sets', 'lucide');
+      el.setAttribute('required', '');
+      document.getElementById('root')?.replaceChildren(el);
+    });
+    await expect(page.locator('#el .ip-trigger')).toBeVisible();
+    const read = () =>
+      page.evaluate(() => {
+        const el = /** @type {any} */ (document.getElementById('el'));
+        return {
+          valid: el.checkValidity(),
+          validity: el.validity.valid,
+          message: el.validationMessage,
+        };
+      });
+    const empty = await read();
+    expect(empty.valid).toBe(false);
+    expect(empty.validity).toBe(false);
+    expect(empty.message).not.toBe('');
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(false); // prettier-ignore
+    await expect(page.locator('#el [part="error"]')).not.toBeEmpty();
+    await page.evaluate(() => {
+      /** @type {any} */ (document.getElementById('el')).value = 'lucide:heart';
+    });
+    expect(await read()).toEqual({ valid: true, validity: true, message: '' });
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(true); // prettier-ignore
+  });
 });

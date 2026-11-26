@@ -180,6 +180,92 @@ test.describe('<vt-tags>', () => {
     expect(await formValue(page)).toBe('"a,b"');
   });
 
+  test('answers checkValidity(), reportValidity(), validity and validationMessage', async ({
+    page,
+  }) => {
+    await mountTags(page, { mode: 'edit', name: 'topics', required: '' }, '[]');
+    const state = () =>
+      page.evaluate(() => {
+        const el = /** @type {any} */ (document.getElementById('el'));
+        const probe = {
+          valid: el.checkValidity(),
+          validity: el.validity.valid,
+          valueMissing: el.validity.valueMissing,
+          message: el.validationMessage,
+        };
+        return probe;
+      });
+    const empty = await state();
+    expect(empty.valid).toBe(false);
+    expect(empty.validity).toBe(false);
+    expect(empty.valueMissing).toBe(true);
+    expect(empty.message).not.toBe('');
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(false); // prettier-ignore
+    await page.evaluate(() => {
+      /** @type {any} */ (document.getElementById('el')).value = ['design'];
+    });
+    expect(await state()).toEqual({
+      valid: true,
+      validity: true,
+      valueMissing: false,
+      message: '',
+    });
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(true); // prettier-ignore
+  });
+
+  test('shows a persistent error and aria-invalid after reportValidity(), and clears it', async ({
+    page,
+  }) => {
+    await mountTags(page, { mode: 'edit', name: 'topics', required: '' }, '[]');
+    const error = page.locator('#el [part="error"]');
+    const input = page.locator('#el .tag-input');
+    await expect(error).toBeHidden();
+    await expect(input).not.toHaveAttribute('aria-invalid', 'true');
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(false); // prettier-ignore
+    await expect(error).toBeVisible();
+    await expect(error).toHaveText('Select at least one tag.');
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    const errorId = await error.getAttribute('id');
+    expect(await input.getAttribute('aria-describedby')).toContain(errorId);
+    await expect(page.locator('#el .field')).toHaveClass(/invalid/);
+    // Still there after the 4 s status message would be gone.
+    await page.waitForTimeout(4200);
+    await expect(error).toBeVisible();
+    await input.fill('design');
+    await input.press('Enter');
+    await expect(error).toBeHidden();
+    await expect(input).not.toHaveAttribute('aria-invalid', 'true');
+  });
+
+  test('a refused native submit focuses the tag input without a "not focusable" error', async ({
+    page,
+  }) => {
+    await mountTags(page, { mode: 'edit', name: 'topics', required: '' }, '[]');
+    await page.evaluate(() => {
+      const form = /** @type {HTMLFormElement} */ (document.getElementById('form'));
+      const go = document.createElement('button');
+      go.type = 'submit';
+      go.id = 'go';
+      go.textContent = 'Go';
+      form.append(go);
+    });
+    await page.locator('#go').click();
+    const error = page.locator('#el [part="error"]');
+    await expect(error).toBeVisible();
+    await expect(page.locator('#el .tag-input')).toBeFocused();
+    expect(errors.filter((text) => /not focusable/i.test(text))).toEqual([]);
+    await page.locator('#el .tag-input').fill('design');
+    await page.locator('#el .tag-input').press('Enter');
+    await expect(error).toBeHidden();
+    await page.evaluate(() => {
+      /** @type {any} */ (document.getElementById('el')).value = [];
+    });
+    await page.locator('#go').click();
+    await expect(error).toBeVisible();
+    await page.evaluate(() => /** @type {HTMLFormElement} */ (document.getElementById('form')).reset()); // prettier-ignore
+    await expect(error).toBeHidden();
+  });
+
   test('browse panel lists every option with checkboxes', async ({ page }) => {
     await mountTags(page, { mode: 'edit', name: 'topics', variant: 'full' });
     await page.locator('#el').getByRole('button', { name: 'Browse all tags' }).click();

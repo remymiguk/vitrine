@@ -85,7 +85,7 @@ Badges show the service and kind, Live or Test, and Publishable or Temporary. Th
 
 ## Properties
 
-`value` is the key. `visible` is whether it is shown (settable). `kind` is the kind recognized: `{ id, provider, label, prefix, env, kind }`, or `null`.
+`value` is the key. `visible` is whether it is shown (settable). `kind` is the kind recognized: `{ id, provider, label, prefix, env, kind }`, or `null`. `validity` and `validationMessage` are read-only, and `checkValidity()` and `reportValidity()` work as on a native field: an `editable` key is checked against `required`, `expect` and `pattern`, and `reportValidity()` also shows the message under the field.
 
 ## Events
 

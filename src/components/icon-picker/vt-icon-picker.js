@@ -75,6 +75,8 @@ function remember(value) {
  * @attr {number} page - Icons shown before "Show more" (default 300).
  *
  * @prop {string} value - The icon chosen: `set:name`, or an empty string.
+ * @prop {ValidityState} validity - Its validity (read-only).
+ * @prop {string} validationMessage - Why it is invalid (read-only).
  * @prop {{ set: string, name: string, label: string, svg: string, code: string } | null} icon - The icon chosen, once its set is loaded (read-only).
  *
  * @fires vt-change - An icon was chosen or removed. Detail: `{ value, set, name }`.
@@ -152,6 +154,28 @@ export class VtIconPicker extends VtBase {
   set value(value) {
     this.current = value === null || value === undefined ? '' : String(value).trim().slice(0, 200);
     if (this._connected) this.render();
+  }
+
+  /** @type {ValidityState | undefined} */
+  get validity() {
+    return this.internals?.validity;
+  }
+
+  /** @type {string} */
+  get validationMessage() {
+    return this.internals?.validationMessage ?? '';
+  }
+
+  /** @returns {boolean} Whether the value is valid (`required` needs an icon). */
+  checkValidity() {
+    return this.internals?.checkValidity() ?? true;
+  }
+
+  /** @returns {boolean} Like `checkValidity()`, and shows the message under the picker. */
+  reportValidity() {
+    this.showErrors = true;
+    this.refreshState();
+    return this.internals?.reportValidity() ?? true;
   }
 
   /** @returns {{ set: string, name: string, label: string, svg: string, code: string } | null} */

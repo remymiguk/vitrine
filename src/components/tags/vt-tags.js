@@ -76,6 +76,8 @@ export const TAG_EVENTS = Object.freeze({
  *
  * @prop {string[]} value - Selected values. Setting it accepts values, tag objects or JSON.
  * @prop {Tag[]} tags - Selected tags with their details (read-only copy).
+ * @prop {ValidityState} validity - Its validity (read-only).
+ * @prop {string} validationMessage - Why it is invalid (read-only).
  * @prop {Tag[]} options - Available tags. Setting it accepts strings, tag objects or JSON.
  * @prop {(query: string, signal: AbortSignal) => Promise<unknown[]>} suggest - Custom
  *   suggestions provider (for example a call to your API). Takes precedence over `suggest-src`.
@@ -106,6 +108,7 @@ export const TAG_EVENTS = Object.freeze({
  * @csspart option - A suggestion. The highlighted one also has `option-active`.
  * @csspart browse-panel - The "browse all" panel.
  * @csspart tags-status - Count and messages under the field.
+ * @csspart error - The message shown under the field when `required` is not met (after `reportValidity()` or a refused form submission).
  * @csspart group - Group heading in the suggestions list.
  * @csspart browse-button - "Browse all tags" button.
  * @csspart clear-button - "Remove all tags" button.
@@ -180,14 +183,29 @@ export class VtTags extends VtBase {
     this.suggestTimer = undefined;
     this.listId = uid('listbox');
     this.hintId = uid('hint');
+    this.errorId = uid('error');
+    this.showErrors = false;
     /**
      * Pieces updated in place while typing.
-     * @type {{ field: HTMLElement | null, chips: HTMLElement | null, input: HTMLInputElement | null, list: HTMLElement | null, status: HTMLElement | null, browse: HTMLElement | null }}
+     * @type {{ field: HTMLElement | null, chips: HTMLElement | null, input: HTMLInputElement | null, list: HTMLElement | null, status: HTMLElement | null, error: HTMLElement | null, browse: HTMLElement | null }}
      */
-    this.parts = { field: null, chips: null, input: null, list: null, status: null, browse: null };
+    this.parts = {
+      field: null,
+      chips: null,
+      input: null,
+      list: null,
+      status: null,
+      error: null,
+      browse: null,
+    };
     this.message = '';
     /** @type {ReturnType<typeof setTimeout> | undefined} */
     this.messageTimer = undefined;
+    // A refused form submission: show the message (the browser still focuses the field).
+    this.addEventListener('invalid', () => {
+      this.showErrors = true;
+      this.updateStatus();
+    });
   }
 
   // ------------------------------------------------------------------ properties
@@ -204,6 +222,28 @@ export class VtTags extends VtBase {
     );
     this.updateForm();
     if (this._connected) this.refresh();
+  }
+
+  /** @type {ValidityState | undefined} */
+  get validity() {
+    return this.internals?.validity;
+  }
+
+  /** @type {string} */
+  get validationMessage() {
+    return this.internals?.validationMessage ?? '';
+  }
+
+  /** @returns {boolean} Whether the selection is valid (`required` needs a tag). */
+  checkValidity() {
+    return this.internals?.checkValidity() ?? true;
+  }
+
+  /** @returns {boolean} Like `checkValidity()`, and shows the problem on the text field. */
+  reportValidity() {
+    this.showErrors = true;
+    this.updateStatus();
+    return this.internals?.reportValidity() ?? true;
   }
 
   /** @returns {Tag[]} */
@@ -377,18 +417,23 @@ export class VtTags extends VtBase {
     );
     const disabled = parseBoolean(this.getAttribute('disabled')) === true;
     this.internals.setFormValue(disabled ? null : serialize(this.selected, format));
-    if (parseBoolean(this.getAttribute('required')) === true && !this.selected.length) {
-      this.internals.setValidity(
-        { valueMissing: true },
-        this.t('tagsRequired'),
-        this.parts.input ?? undefined,
-      );
+    if (this.missing) {
+      // The anchor must be the input in the document: a stale one (replaced by a render) is dropped.
+      const input = this.parts.input?.isConnected ? this.parts.input : undefined;
+      this.internals.setValidity({ valueMissing: true }, this.t('tagsRequired'), input);
     } else {
       this.internals.setValidity({});
     }
+    if (this._connected) this.updateStatus();
+  }
+
+  /** @returns {boolean} Whether `required` is not met. */
+  get missing() {
+    return parseBoolean(this.getAttribute('required')) === true && !this.selected.length;
   }
 
   formResetCallback() {
+    this.showErrors = false;
     this.selected = [...this.initial];
     this.updateForm();
     this.refresh();
@@ -575,7 +620,12 @@ export class VtTags extends VtBase {
         part: 'tags-status',
         attrs: { id: this.hintId },
       });
-      body.append(this.parts.field, this.parts.list, this.parts.status);
+      this.parts.error = h('p', {
+        class: 'tags-error',
+        part: 'error',
+        attrs: { id: this.errorId, 'aria-live': 'polite' },
+      });
+      body.append(this.parts.field, this.parts.list, this.parts.status, this.parts.error);
       if (this.browseOpen) {
         this.parts.browse = this.renderBrowse();
         body.append(this.parts.browse);
@@ -584,6 +634,7 @@ export class VtTags extends VtBase {
       this.parts.field = null;
       this.parts.input = null;
       this.parts.list = null;
+      this.parts.error = null;
       body.append(this.parts.chips);
     }
     const actions = [
@@ -617,7 +668,8 @@ export class VtTags extends VtBase {
     ];
     frame.append(...this.chrome({ badge: '', actions }), body);
     this.updateList();
-    this.updateStatus();
+    // The input is new: give the validity its anchor again.
+    this.updateForm();
   }
 
   /** Updates chips, suggestions and status in place (focus and caret stay in the input). */
@@ -744,7 +796,7 @@ export class VtTags extends VtBase {
         'aria-autocomplete': 'list',
         'aria-expanded': 'false',
         'aria-controls': this.listId,
-        'aria-describedby': this.hintId,
+        'aria-describedby': `${this.hintId} ${this.errorId}`,
         'aria-label': this.heading || t('addTag'),
         placeholder: full
           ? t('tagLimit', { max: formatNumber(this.maxTags, this.locale) })
@@ -1025,9 +1077,14 @@ export class VtTags extends VtBase {
       this.message ? h('span', { class: 'tags-message', text: this.message }) : null,
     ]);
     const input = this.parts.input;
+    const invalid = this.missing && this.showErrors;
+    if (this.parts.error) this.parts.error.textContent = invalid ? this.t('tagsRequired') : '';
+    this.parts.field?.classList.toggle('invalid', invalid);
     if (input) {
       const full = this.selected.length >= this.maxTags;
       input.readOnly = full;
+      if (invalid) input.setAttribute('aria-invalid', 'true');
+      else input.removeAttribute('aria-invalid');
     }
   }
 

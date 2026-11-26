@@ -155,4 +155,36 @@ test.describe('credential fields', () => {
     });
     expect(data).toEqual({ valid: true, entries: { password: 'Qv7#pLm2!xR9wZ', token: `ghp_${'a'.repeat(36)}`, version: '1.0.0' } }); // prettier-ignore
   });
+
+  test('<vt-secret> answers checkValidity(), reportValidity(), validity and validationMessage', async ({
+    page,
+  }) => {
+    await page.evaluate(() => {
+      const el = document.createElement('vt-secret');
+      el.id = 'el';
+      el.setAttribute('editable', '');
+      el.setAttribute('required', '');
+      el.setAttribute('lang-ui', 'en');
+      document.getElementById('root')?.replaceChildren(el);
+    });
+    await expect(page.locator('#el input')).toBeVisible();
+    const read = () =>
+      page.evaluate(() => {
+        const el = /** @type {any} */ (document.getElementById('el'));
+        return {
+          valid: el.checkValidity(),
+          validity: el.validity.valid,
+          message: el.validationMessage,
+        };
+      });
+    const empty = await read();
+    expect(empty.valid).toBe(false);
+    expect(empty.validity).toBe(false);
+    expect(empty.message).not.toBe('');
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(false); // prettier-ignore
+    await expect(page.locator('#el [part="error"]')).not.toBeEmpty();
+    await page.locator('#el input').fill(STRIPE);
+    expect(await read()).toEqual({ valid: true, validity: true, message: '' });
+    expect(await page.evaluate(() => /** @type {any} */ (document.getElementById('el')).reportValidity())).toBe(true); // prettier-ignore
+  });
 });

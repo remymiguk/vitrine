@@ -165,6 +165,15 @@
   box-shadow: 0 0 0 1px var(--_accent);
 }
 
+/* Required and empty, after reportValidity() or a refused submission. */
+.field.invalid {
+  border-color: var(--_danger);
+}
+
+.field.invalid:focus-within {
+  box-shadow: 0 0 0 1px var(--_danger);
+}
+
 .field .tag-list {
   display: contents;
 }
@@ -284,6 +293,18 @@
   color: var(--_fg-muted);
   font-family: var(--_font-ui);
   font-size: var(--_font-size-small);
+}
+
+.tags-error {
+  margin: 6px 0 0;
+  color: var(--_danger);
+  font-family: var(--_font-ui);
+  font-size: var(--_font-size-ui);
+  font-weight: 500;
+}
+
+.tags-error:empty {
+  display: none;
 }
 
 .tags-message {

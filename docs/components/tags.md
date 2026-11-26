@@ -363,6 +363,7 @@ topics = json.loads(request.form.get("topics", "[]"))
 - **`disabled`**: the value is not submitted and the field is not editable. A disabled ancestor `<fieldset>` also makes it non-editable.
 - **Reset**: resetting the form restores the selection given by the content (not a selection set later through the `value` property).
 - `new FormData(form)` and `form.elements` include the element like any field.
+- `checkValidity()`, `reportValidity()`, `validity` and `validationMessage` work as on a native field, so code (such as [`<vt-form-steps>`](form-steps.md)) can check it without a form.
 
 ### Validating new tags on the server
 
@@ -510,6 +511,7 @@ In addition to the [shared parts](../common-attributes.md#shared-css-parts):
 | `browse-panel`                          | The browse panel                                           |
 | `clear-button`                          | The "Remove all tags" button                               |
 | `tags-status`                           | The count and messages under the field                     |
+| `error`                                 | The message under the field when `required` is not met     |
 
 ## Keyboard
 
@@ -525,7 +527,7 @@ In the text field (edit mode):
 | Backspace             | In an empty field: highlight the last tag, then remove it on the second press |
 | Tab                   | Move to the next control (the list closes when the field loses focus)         |
 
-The field is a combobox (`role="combobox"`, `aria-autocomplete="list"`, `aria-expanded`, `aria-controls`), and the highlighted option is exposed with `aria-activedescendant`, so focus stays in the field. Options have `role="option"` and `aria-selected`; disabled ones have `aria-disabled="true"`. The list is `aria-multiselectable`. The field is described by the status line. Additions, removals and refusals are announced through the live region. See [Accessibility](../accessibility.md#tags-combobox).
+The field is a combobox (`role="combobox"`, `aria-autocomplete="list"`, `aria-expanded`, `aria-controls`), and the highlighted option is exposed with `aria-activedescendant`, so focus stays in the field. Options have `role="option"` and `aria-selected`; disabled ones have `aria-disabled="true"`. The list is `aria-multiselectable`. The field is described by the status line and the error message. When `required` is not met, after `reportValidity()` or a refused form submission, the message stays under the field (`part="error"`), the border turns red and the input gets `aria-invalid="true"`; they clear when a tag is added or the form is reset. Additions, removals and refusals are announced through the live region. See [Accessibility](../accessibility.md#tags-combobox).
 
 ## Limits
 

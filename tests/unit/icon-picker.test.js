@@ -135,4 +135,13 @@ describe('<vt-icon-picker>', () => {
     expect(el.root.querySelector('.ip-option[aria-selected="true"]')?.getAttribute('data-name')).toBe('house'); // prettier-ignore
     expect(el.root.querySelector('.ip-code')?.textContent).toBe('ti ti-house');
   });
+
+  it('answers validity calls as valid where ElementInternals is missing', async () => {
+    const el = await mount({ required: '' });
+    // happy-dom has no attachInternals(): the element must not throw and must not block.
+    expect(el.validity).toBeUndefined();
+    expect(el.validationMessage).toBe('');
+    expect(el.checkValidity()).toBe(true);
+    expect(el.reportValidity()).toBe(true);
+  });
 });

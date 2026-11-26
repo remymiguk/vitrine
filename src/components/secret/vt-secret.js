@@ -92,6 +92,8 @@ function readDate(value) {
  * @prop {string} value - The key.
  * @prop {boolean} visible - Whether the key is shown.
  * @prop {import('./secrets.js').Detected | null} kind - The kind of key recognized (read-only).
+ * @prop {ValidityState} validity - Its validity (read-only).
+ * @prop {string} validationMessage - Why it is invalid (read-only).
  *
  * @fires vt-toggle - The key was shown or hidden. Detail: `{ visible }`.
  * @fires vt-copy - The key was copied. Detail: `{ format }`, never the key.
@@ -251,9 +253,21 @@ export class VtSecret extends VtBase {
     return this.internals?.validity;
   }
 
-  /** @returns {boolean} */
+  /** @type {string} */
+  get validationMessage() {
+    return this.internals?.validationMessage ?? '';
+  }
+
+  /** @returns {boolean} Whether the key is valid (`required`, `expect` and `pattern` apply to an `editable` key). */
   checkValidity() {
     return this.internals?.checkValidity() ?? true;
+  }
+
+  /** @returns {boolean} Like `checkValidity()`, and shows the message under the field. */
+  reportValidity() {
+    this.showErrors = true;
+    this.update();
+    return this.internals?.reportValidity() ?? true;
   }
 
   /** @param {FocusOptions} [options] */

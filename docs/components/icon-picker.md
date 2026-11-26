@@ -40,7 +40,7 @@ The field shows the icon chosen and its name; the button opens a panel with the 
 
 ## Forms
 
-The picker takes part in `<form>` like a native field: its `name` is submitted with `set:name`, `required` blocks the form until an icon is chosen, and reset and `disabled` (also from a `<fieldset>`) work.
+The picker takes part in `<form>` like a native field: its `name` is submitted with `set:name`, `required` blocks the form until an icon is chosen, and reset and `disabled` (also from a `<fieldset>`) work. `checkValidity()`, `reportValidity()`, `validity` and `validationMessage` work as on a native field.
 
 ## Attributes
 

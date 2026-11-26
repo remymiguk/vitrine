@@ -203,4 +203,13 @@ describe('<vt-secret>', () => {
     expect(el.valid).toBe(true);
     expect(el.root.querySelector('.sc-badge')?.textContent).toBe('GitHub · Personal access token (classic)'); // prettier-ignore
   });
+
+  it('answers validity calls as valid where ElementInternals is missing', async () => {
+    const el = await mount({ editable: '', required: '' });
+    // happy-dom has no attachInternals(): the element must not throw and must not block.
+    expect(el.validity).toBeUndefined();
+    expect(el.validationMessage).toBe('');
+    expect(el.checkValidity()).toBe(true);
+    expect(el.reportValidity()).toBe(true);
+  });
 });
