@@ -45,6 +45,40 @@
     });
   }
 
+  // Native check boxes have no "at least one" rule: the first box of a required group carries it.
+  function initGroups() {
+    document.querySelectorAll('fieldset.choices').forEach(function (g) {
+      var inputs = Array.prototype.slice.call(g.querySelectorAll('input'));
+      var err = g.querySelector('.choice-error');
+      var isCheck = g.dataset.group === 'checkbox';
+      var req = g.hasAttribute('data-required');
+      function sync() {
+        var ok = !inputs.some(function (i) { return i.checked; });
+        if (isCheck && req) inputs[0].setCustomValidity(ok ? 'Choose at least one option.' : '');
+        if (!g.hasAttribute('data-invalid')) return;
+        var bad = inputs.some(function (i) { return !i.validity.valid; });
+        if (!bad) show(false, '');
+      }
+      function show(bad, msg) {
+        if (bad) { g.setAttribute('data-invalid', ''); err.textContent = msg; err.hidden = false; }
+        else { g.removeAttribute('data-invalid'); err.textContent = ''; err.hidden = true; }
+        inputs.forEach(function (i) {
+          if (bad) i.setAttribute('aria-describedby', err.id); else i.removeAttribute('aria-describedby');
+          i.setAttribute('aria-invalid', bad ? 'true' : 'false');
+        });
+      }
+      inputs.forEach(function (i) {
+        i.addEventListener('invalid', function () { show(true, i.validationMessage || 'Choose an option.'); });
+        i.addEventListener('change', function () {
+          sync();
+          if (inputs.every(function (x) { return x.validity.valid; })) show(false, '');
+        });
+      });
+      sync();
+    });
+  }
+
+  initGroups();
   wire('a');
   wire('b');
 })();

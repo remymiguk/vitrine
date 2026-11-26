@@ -73,3 +73,48 @@ vt-form-steps > fieldset > legend { font-size: 1.125rem; font-weight: 650; line-
 @media (prefers-color-scheme:dark){.vitrine-credit{background:#14b8a6;color:#04201e}}
 :root[data-theme="dark"] .vitrine-credit{background:#14b8a6;color:#04201e}
 :root[data-theme="light"] .vitrine-credit{background:#0a6e6f;color:#fff}
+
+/* ---------- Form card (look of the questionnaire demo) ---------- */
+.col:has(vt-form-steps) { padding: 0; border: 0; background: none; }
+vt-form-steps {
+  display: block; overflow: hidden;
+  background: var(--vt-surface, var(--surface)); color: var(--vt-fg, var(--fg));
+  border: 1px solid var(--vt-border, var(--border)); border-radius: var(--vt-radius, 10px);
+  padding: 4px 4px 8px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .06);
+}
+vt-form-steps::part(progress) { padding-bottom: 12px; border-bottom: 1px solid var(--vt-border, var(--border)); }
+vt-form-steps::part(nav) { padding-top: 12px; border-top: 1px solid var(--vt-border, var(--border)); }
+vt-form-steps::part(review) { padding: 12px; background: var(--sunken); border: 1px solid var(--border); border-radius: calc(var(--vt-radius, 10px) - 2px); }
+
+/* ---------- Native choice groups as cards ---------- */
+:root {
+  --c-border-strong: var(--vt-border-strong, #b9beb4);
+  --c-accent-soft: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  --c-danger: var(--vt-danger, #b42318);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --c-border-strong: var(--vt-border-strong, #3a4456); --c-danger: var(--vt-danger, #f97066);
+    --c-accent-soft: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+}
+:root[data-theme="dark"] { --c-border-strong: var(--vt-border-strong, #3a4456); --c-danger: var(--vt-danger, #f97066);
+  --c-accent-soft: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+
+fieldset.choices { display: grid; gap: 8px; min-width: 0; margin: 0 0 16px; padding: 0; border: 0; }
+fieldset.choices > legend { padding: 0; margin-bottom: 8px; font-weight: 600; font-size: 1em; color: var(--fg); }
+fieldset.choices[data-required] > legend::after { content: " *"; color: var(--c-danger); }
+.option {
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px;
+  border: 1px solid var(--c-border-strong); border-radius: 6px;
+  background: var(--surface); cursor: pointer;
+}
+.option:hover { background: var(--c-accent-soft); }
+.option:has(input:checked) { border-color: var(--accent); background: var(--c-accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+.option:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.option input { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); }
+.option > span { display: grid; gap: 2px; min-width: 0; }
+.option .note::after { content: attr(data-note); }
+.option .note { margin: 0; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+fieldset.choices[data-invalid] .option { border-color: var(--c-danger); }
+.choice-error { margin: 0; color: var(--c-danger); font-size: 13px; font-weight: 600; }
+.choice-error::before { content: "\26A0\FE0E  "; }

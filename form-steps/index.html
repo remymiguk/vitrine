@@ -33,16 +33,20 @@
               </fieldset>
               <fieldset>
                 <legend>Your needs</legend>
-                <vt-field name="topics" type="checkboxes" required label="Topics">
-                  code | Code blocks
-                  json | JSON viewer
-                  tables | Tables
-                </vt-field>
-                <vt-field name="plan" type="radio" label="Plan">
-                  free | Free
-                  team | Team
-                  org | Organisation
-                </vt-field>
+                <fieldset class="choices" data-group="checkbox" data-required>
+                  <legend>Topics</legend>
+                  <label class="option"><input type="checkbox" name="topics" value="code"><span><strong>Code blocks</strong><span class="note" data-note="Syntax-highlighted snippets with a copy button."></span></span></label>
+                  <label class="option"><input type="checkbox" name="topics" value="json"><span><strong>JSON viewer</strong><span class="note" data-note="Collapsible trees for API responses."></span></span></label>
+                  <label class="option"><input type="checkbox" name="topics" value="tables"><span><strong>Tables</strong><span class="note" data-note="Sortable, filterable data tables."></span></span></label>
+                  <p class="choice-error" id="err-topics" aria-live="polite" hidden></p>
+                </fieldset>
+                <fieldset class="choices" data-group="radio">
+                  <legend>Plan</legend>
+                  <label class="option"><input type="radio" name="plan" value="free"><span><strong>Free</strong><span class="note" data-note="For trying things out."></span></span></label>
+                  <label class="option"><input type="radio" name="plan" value="team"><span><strong>Team</strong><span class="note" data-note="Shared workspace for a small group."></span></span></label>
+                  <label class="option"><input type="radio" name="plan" value="org"><span><strong>Organisation</strong><span class="note" data-note="Single sign-on and audit logs."></span></span></label>
+                  <p class="choice-error" id="err-plan" aria-live="polite" hidden></p>
+                </fieldset>
               </fieldset>
               <fieldset>
                 <legend>Details</legend>
@@ -71,10 +75,12 @@
               <fieldset>
                 <legend>Project</legend>
                 <vt-field name="project" type="text" required maxlength="30" label="Project name" hint="Up to 30 characters."></vt-field>
-                <vt-field name="visibility" type="radio" required label="Visibility">
-                  private | Private
-                  public | Public
-                </vt-field>
+                <fieldset class="choices" data-group="radio" data-required>
+                  <legend>Visibility</legend>
+                  <label class="option"><input type="radio" name="visibility" value="private" required><span><strong>Private</strong><span class="note" data-note="Only people you invite can see it."></span></span></label>
+                  <label class="option"><input type="radio" name="visibility" value="public" required><span><strong>Public</strong><span class="note" data-note="Anyone with the link can see it."></span></span></label>
+                  <p class="choice-error" id="err-visibility" aria-live="polite" hidden></p>
+                </fieldset>
               </fieldset>
               <fieldset>
                 <legend>Options</legend>
